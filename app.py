@@ -50,7 +50,9 @@ def main():
 
     # OpenAI API key
     load_dotenv()
-    api_key = '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'
+    api_key = st.secrets['OPENAI_API_KEY']
+    if not api_key:
+        api_key = os.environ.get('OPENAI_API_KEY')
     print(api_key)
     # Upload the file (PDF or CSV)
     file = st.file_uploader("Upload Your File", type=['pdf', 'csv'])
