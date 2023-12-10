@@ -1,5 +1,4 @@
 import streamlit as st
-from streamlit_extras.add_vertical_space import add_vertical_space
 from PyPDF2 import PdfReader
 import pandas as pd
 import openai
@@ -9,14 +8,6 @@ from dotenv import load_dotenv
 # Initialize history session
 if 'chat_history' not in st.session_state:
     st.session_state['chat_history'] = []
-
-# Sidebar contents
-with st.sidebar:
-    st.title("AI-powered assistant")
-    st.markdown('''
-            Structured Financials AI-Powered Assistant
-        ''')
-    add_vertical_space(15)
 
 # Generate an answer using ChatGPT
 def generate_answer(api_key, query):
@@ -45,8 +36,6 @@ def process_file(file, file_type):
         return df.to_string(index=False)  # Convert dataframe to a string for simplicity
 
 def main():
-    st.write("Chat with the PDF or Excel!")
-
     # OpenAI API key
     load_dotenv()
     #api_key = os.environ.get('OPENAI_API_KEY')
@@ -62,18 +51,25 @@ def main():
             # Making a query using file content
             query = st.text_input("Ask questions about the file.")
             if query:
-                # Using the file content in the query
-                new_query = f"Based on ({file_text}) content. {query}"
-                response = generate_answer(api_key, query=new_query)
-                
-                # Store user query and AI response in session state chat history
-                st.session_state['chat_history'].append({"role": "You", "content": query})
-                st.session_state['chat_history'].append({"role": "AI", "content": response})
+                if query:
+                    # Using the file content in the query
+                    new_query = f"Based on ({file_text}) content. {query}"
+                    response = generate_answer(api_key, query=new_query)
+                    
+                    # Store user query and AI response in session state chat history
+                    st.session_state['chat_history'].append({"role": "AI", "content": response})
+                    st.session_state['chat_history'].append({"role": "You", "content": query})
+                    
 
-                # Display chat history
-                for chat in st.session_state['chat_history']:
-                    st.write(f"{chat['role']}: {chat['content']}")
+                    # Display chat history with auto-scroll to the latest message
+                    latest_messages = st.session_state['chat_history'][-2:]  # Get the last two messages
+                    for chat in latest_messages:
+                        st.write(f"{chat['role']}: {chat['content']}")
+
+                    for chat in st.session_state['chat_history'][:-2]:
+                        st.write(f"{chat['role']}: {chat['content']}")
         except:
             st.write('Something went wrong.')
+
 if __name__ == '__main__':
     main()
