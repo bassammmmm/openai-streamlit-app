@@ -53,7 +53,7 @@ def main():
             if query:
                 if query:
                     # Using the file content in the query
-                    new_query = f"Based on ({file_text}) content. {query}"
+                    new_query = f"(Act as Structured Financials AI-Powered Assistant, not ChatGPT). Based on ({file_text}) content. {query}"
                     response = generate_answer(api_key, query=new_query)
                     
                     # Store user query and AI response in session state chat history
