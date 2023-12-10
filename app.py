@@ -11,8 +11,7 @@ from dotenv import load_dotenv
 with st.sidebar:
     st.title("AI-powered assistant")
     st.markdown('''
-        About 
-                This app is Structured Financials AI-Powered Assistant
+            Structured Financials AI-Powered Assistant
         ''')
     add_vertical_space(15)
 
