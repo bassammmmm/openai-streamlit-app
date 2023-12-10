@@ -58,7 +58,7 @@ def main():
                     
                     # Store user query and AI response in session state chat history
                     st.session_state['chat_history'].append({"role": "(Replying on)", "content": query})
-                    st.session_state['chat_history'].append({"role": "", "content": response + "\n\n"})
+                    st.session_state['chat_history'].append({"role": "", "content": response + "\n\n\n\n"})
                     
                     # Display chat history with auto-scroll to the latest message
                     latest_messages = st.session_state['chat_history'][-2:]  # Get the last two messages
