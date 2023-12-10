@@ -51,7 +51,6 @@ def main():
     load_dotenv()
     #api_key = os.environ.get('OPENAI_API_KEY')
     api_key = st.secrets['OPENAI_API_KEY']
-    
     # Upload the file (PDF or CSV)
     file = st.file_uploader("Upload Your File", type=['pdf', 'csv'])
 
