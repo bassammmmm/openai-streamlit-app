@@ -63,13 +63,13 @@ def main():
                     # Display chat history with auto-scroll to the latest message
                     latest_messages = st.session_state['chat_history'][-2:]  # Get the last two messages
                     for chat in latest_messages:
-                        if chat['role'] is not None:
+                        if not chat['role'] == "":
                             st.write(f"{chat['role']}: {chat['content']}")
                         else:
                             st.write(f"{chat['content']}")
                             
                     for chat in st.session_state['chat_history'][:-2]:
-                        if not chat['role'] is None:
+                        if not chat['role'] == "":
                             st.write(f"{chat['role']}: {chat['content']}")
                         else:
                             st.write(f"{chat['content']}")
