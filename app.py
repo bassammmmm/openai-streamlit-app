@@ -58,7 +58,7 @@ def main():
                     
                     # Store user query and AI response in session state chat history
                     st.session_state['chat_history'].append({"role": "(Replying on)", "content": query})
-                    st.session_state['chat_history'].append({"role": "AI", "content": response})
+                    st.session_state['chat_history'].append({"role": "", "content": response})
                     
                     
 
