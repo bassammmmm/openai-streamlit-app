@@ -6,6 +6,9 @@ import openai
 import os
 from dotenv import load_dotenv
 
+# Initialize session state
+if 'chat_history' not in st.session_state:
+    st.session_state['chat_history'] = []
 
 # Sidebar contents
 with st.sidebar:
@@ -46,15 +49,12 @@ def main():
 
     # OpenAI API key
     load_dotenv()
-    api_key = st.secrets['OPENAI_API_KEY']
-    if not api_key:
-        api_key = os.environ.get('OPENAI_API_KEY')
-    print(api_key)
+    api_key = os.environ.get('OPENAI_API_KEY')
+
     # Upload the file (PDF or CSV)
     file = st.file_uploader("Upload Your File", type=['pdf', 'csv'])
 
     if file:
-        print(file.type)
         file_type = 'pdf' if file.type == 'application/pdf' else 'csv'
         file_text = process_file(file, file_type)
 
@@ -64,7 +64,14 @@ def main():
             # Using the file content in the query
             new_query = f"Based on ({file_text}) content. {query}"
             response = generate_answer(api_key, query=new_query)
-            st.write(response)
+            
+            # Store user query and AI response in session state chat history
+            st.session_state['chat_history'].append({"role": "You", "content": query})
+            st.session_state['chat_history'].append({"role": "AI", "content": response})
+
+            # Display chat history
+            for chat in st.session_state['chat_history']:
+                st.write(f"{chat['role']}: {chat['content']}")
 
 if __name__ == '__main__':
     main()
