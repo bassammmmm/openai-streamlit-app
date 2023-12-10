@@ -55,23 +55,25 @@ def main():
     file = st.file_uploader("Upload Your File", type=['pdf', 'csv'])
 
     if file:
-        file_type = 'pdf' if file.type == 'application/pdf' else 'csv'
-        file_text = process_file(file, file_type)
+        try:
+            file_type = 'pdf' if file.type == 'application/pdf' else 'csv'
+            file_text = process_file(file, file_type)
 
-        # Making a query using file content
-        query = st.text_input("Ask questions about the file.")
-        if query:
-            # Using the file content in the query
-            new_query = f"Based on ({file_text}) content. {query}"
-            response = generate_answer(api_key, query=new_query)
-            
-            # Store user query and AI response in session state chat history
-            st.session_state['chat_history'].append({"role": "You", "content": query})
-            st.session_state['chat_history'].append({"role": "AI", "content": response})
+            # Making a query using file content
+            query = st.text_input("Ask questions about the file.")
+            if query:
+                # Using the file content in the query
+                new_query = f"Based on ({file_text}) content. {query}"
+                response = generate_answer(api_key, query=new_query)
+                
+                # Store user query and AI response in session state chat history
+                st.session_state['chat_history'].append({"role": "You", "content": query})
+                st.session_state['chat_history'].append({"role": "AI", "content": response})
 
-            # Display chat history
-            for chat in st.session_state['chat_history']:
-                st.write(f"{chat['role']}: {chat['content']}")
-
+                # Display chat history
+                for chat in st.session_state['chat_history']:
+                    st.write(f"{chat['role']}: {chat['content']}")
+        except:
+            st.write('Something went wrong.')
 if __name__ == '__main__':
     main()
