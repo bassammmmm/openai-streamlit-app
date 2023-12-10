@@ -60,15 +60,19 @@ def main():
                     st.session_state['chat_history'].append({"role": "(Replying on)", "content": query})
                     st.session_state['chat_history'].append({"role": "", "content": response})
                     
-                    
-
                     # Display chat history with auto-scroll to the latest message
                     latest_messages = st.session_state['chat_history'][-2:]  # Get the last two messages
                     for chat in latest_messages:
-                        st.write(f"{chat['role']}: {chat['content']}")
-
+                        if chat['role'] is not None:
+                            st.write(f"{chat['role']}: {chat['content']}")
+                        else:
+                            st.write(f"{chat['role']} {chat['content']}")
+                            
                     for chat in st.session_state['chat_history'][:-2]:
-                        st.write(f"{chat['role']}: {chat['content']}")
+                        if chat['role'] is not None:
+                            st.write(f"{chat['role']}: {chat['content']}")
+                        else:
+                            st.write(f"{chat['role']} {chat['content']}")
         except:
             st.write('Something went wrong.')
 
