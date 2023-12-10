@@ -67,12 +67,13 @@ def main():
                             st.write(f"{chat['role']}: {chat['content']}")
                         else:
                             st.write(f"{chat['content']}")
-                            st.write("\n\n")
+                            st.write("\n\n\n")
                     for chat in st.session_state['chat_history'][:-2]:
                         if not chat['role'] == "":
                             st.write(f"{chat['role']}: {chat['content']}")
                         else:
                             st.write(f"{chat['content']}")
+                            st.write("\n\n\n")
         except:
             st.write('Something went wrong.')
 
