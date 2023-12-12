@@ -23,28 +23,40 @@ def generate_answer(api_key, query):
     )
     return response.choices[0].message.content
 
-# Process the uploaded file (PDF or CSV)
-def process_file(file, file_type):
+def process_file(file, file_type, query):
+    load_dotenv()
+    api_key = os.environ.get('OPENAI_API_KEY')
+    response = ""
+
     if file_type == 'application/pdf':
-        text = ""
         pdf_reader = PdfReader(file)
-        for page in pdf_reader.pages:
-            text += page.extract_text()
-        return text
+        total = len(pdf_reader.pages)
+        with st.spinner('Digging deep into your pages...'):
+            bar = st.progress(value=0, text=None)
+            for index, page in enumerate(pdf_reader.pages):
+                text = f'As Structured Financials AI-Powered Assistant, not ChatGPT. Based on:{page.extract_text()} (This is a page from the data [total pages is {total}]). {query}'
+                response += generate_answer(api_key, query=text) + "\n"
+                percentage = ((index + 1) / total) * 100
+                bar.progress(value=int(percentage), text=f'{(index+1)} page(s) analysed.')
+        bar.empty()
+        return response
+
+    elif file_type == 'text/csv':
+        chunksize = 20000  # Number of rows to process together
+        df_chunks = pd.read_csv(file, encoding='utf-8', chunksize=chunksize)
+        response = ""
+        with st.spinner('Digging deep into your rows... (This may take time)') as spin:
+            for index, chunk in enumerate(df_chunks):
+                chunk_text = ""  # To accumulate text for this chunk
+                print(chunk)
+                chunk_text += f'As Structured Financials AI-Powered Assistant, not ChatGPT. Based on:{chunk} (This is only a part of the data.). {query}' + '\n'  # Accumulate text for this chunk
+                # Generate answer for the accumulated chunk text
+                response += generate_answer(api_key, query=chunk_text) + "\n"
+                print(response)
+        return response
+
     else:
-        print(file_type)
-        if file_type == 'text/csv':
-            print('im here')
-            df = pd.read_csv(file)
-        #elif file_type == 'application/vnd.ms-excel':
-        #    df = pd.read_excel(file, engine='xlrd')  # For .xls format
-        #elif file_type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-        #    df = pd.read_excel(file, engine='xlrd')  # For .xlsx format
-        else:
-            return 'EMPTY CONTENT'
-                    
-        df_text = df.to_string(index=False)
-        return df_text
+        return st.write('Something went wrong.')
 
 
 def create_vertical_space(times):
@@ -53,43 +65,38 @@ def create_vertical_space(times):
 
 def main():
     # OpenAI API key
-    load_dotenv()
-    #api_key = os.environ.get('OPENAI_API_KEY')
-    api_key = st.secrets['OPENAI_API_KEY']
+
     # Upload the file (PDF or CSV)
     file = st.file_uploader("Upload Your File", type=['pdf', 'csv'])
-
     if file:
-
         file_type = str(file.type)
-        file_text = process_file(file, file_type)
-        print(file_text)
+        
+        #print(file_text)
         # Making a query using file content
         query = st.text_input("Ask questions about the file.")
         if query:
-            if query:
-                # Using the file content in the query
-                new_query = f"(Act as Structured Financials AI-Powered Assistant, not ChatGPT). Based on ({file_text}) content. {query}"
-                response = generate_answer(api_key, query=new_query)
-                
-                # Store user query and AI response in session state chat history
-                content = {
-                    'reply_on': query,
-                    'message' : response
-                }
-                st.session_state['chat_history'].append(content)
-                                
+            # Using the file content in the query
+            #new_query = f"(Act as Structured Financials AI-Powered Assistant, not ChatGPT). Based on ({file_text}) content. {query}"
+            #response = generate_answer(api_key, query=new_query)
+            response = process_file(file, file_type, query)
+            # Store user query and AI response in session state chat history
+            content = {
+                'reply_on': query,
+                'message' : response
+            }
+            st.session_state['chat_history'].append(content)
+                            
 
-                latest_messages = st.session_state['chat_history'][-1:]  # Get the one message
-                for chat in latest_messages:
-                    st.markdown(f"***(Replying On)***: ***{chat['reply_on']}***")
-                    st.markdown(f"{chat['message']}")
-                    create_vertical_space(3)
-                    
-                for chat in reversed(st.session_state['chat_history'][:-1]): #The rest of the messages
-                    st.markdown(f"***(Replying On)***: ***{chat['reply_on']}***")
-                    st.markdown(f"{chat['message']}")
-                    create_vertical_space(3)
+            latest_messages = st.session_state['chat_history'][-1:]  # Get the one message
+            for chat in latest_messages:
+                st.markdown(f"***(Replying On)***: ***{chat['reply_on']}***")
+                st.markdown(f"{chat['message']}")
+                create_vertical_space(3)
+                
+            for chat in reversed(st.session_state['chat_history'][:-1]): #The rest of the messages
+                st.markdown(f"***(Replying On)***: ***{chat['reply_on']}***")
+                st.markdown(f"{chat['message']}")
+                create_vertical_space(3)
 
         
 
