@@ -79,14 +79,14 @@ def main():
                 }
                 st.session_state['chat_history'].append(content)
                                 
-                # Display chat history with auto-scroll to the latest message
-                latest_messages = st.session_state['chat_history'][-1:]  # Get the last two messages
+
+                latest_messages = st.session_state['chat_history'][-1:]  # Get the one message
                 for chat in latest_messages:
                     st.markdown(f"***(Replying On)***: ***{chat['reply_on']}***")
                     st.markdown(f"{chat['message']}")
                     create_vertical_space(3)
                     
-                for chat in reversed(st.session_state['chat_history'][:-1]):
+                for chat in reversed(st.session_state['chat_history'][:-1]): #The rest of the messages
                     st.markdown(f"***(Replying On)***: ***{chat['reply_on']}***")
                     st.markdown(f"{chat['message']}")
                     create_vertical_space(3)
