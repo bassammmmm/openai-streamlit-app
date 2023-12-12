@@ -61,38 +61,37 @@ def main():
     file = st.file_uploader("Upload Your File", type=['pdf', 'csv'])
 
     if file:
-        try:
-            file_type = str(file.type)
-            file_text = process_file(file, file_type)
-            print(file_text)
-            # Making a query using file content
-            query = st.text_input("Ask questions about the file.")
+
+        file_type = str(file.type)
+        file_text = process_file(file, file_type)
+        print(file_text)
+        # Making a query using file content
+        query = st.text_input("Ask questions about the file.")
+        if query:
             if query:
-                if query:
-                    # Using the file content in the query
-                    new_query = f"(Act as Structured Financials AI-Powered Assistant, not ChatGPT). Based on ({file_text}) content. {query}"
-                    response = generate_answer(api_key, query=new_query)
+                # Using the file content in the query
+                new_query = f"(Act as Structured Financials AI-Powered Assistant, not ChatGPT). Based on ({file_text}) content. {query}"
+                response = generate_answer(api_key, query=new_query)
+                
+                # Store user query and AI response in session state chat history
+                content = {
+                    'reply_on': query,
+                    'message' : response
+                }
+                st.session_state['chat_history'].append(content)
+                                
+                # Display chat history with auto-scroll to the latest message
+                latest_messages = st.session_state['chat_history'][-1:]  # Get the last two messages
+                for chat in latest_messages:
+                    st.markdown(f"***(Replying On)***: ***{chat['reply_on']}***")
+                    st.markdown(f"{chat['message']}")
+                    create_vertical_space(3)
                     
-                    # Store user query and AI response in session state chat history
-                    content = {
-                        'reply_on': query,
-                        'message' : response
-                    }
-                    st.session_state['chat_history'].append(content)
-                                    
-                    # Display chat history with auto-scroll to the latest message
-                    latest_messages = st.session_state['chat_history'][-1:]  # Get the last two messages
-                    for chat in latest_messages:
-                        st.markdown(f"***(Replying On)***: ***{chat['reply_on']}***")
-                        st.markdown(f"{chat['message']}")
-                        create_vertical_space(3)
-                        
-                    for chat in reversed(st.session_state['chat_history'][:-1]):
-                        st.markdown(f"***(Replying On)***: ***{chat['reply_on']}***")
-                        st.markdown(f"{chat['message']}")
-                        create_vertical_space(3)
-        except:
-            st.markdown(f"***Something went wrong.***")
+                for chat in reversed(st.session_state['chat_history'][:-1]):
+                    st.markdown(f"***(Replying On)***: ***{chat['reply_on']}***")
+                    st.markdown(f"{chat['message']}")
+                    create_vertical_space(3)
+
         
 
 if __name__ == '__main__':
