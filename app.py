@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import openai
 import os
-import chardet
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 
