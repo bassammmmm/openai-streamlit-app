@@ -46,7 +46,7 @@ def process_file(file, file_type, query):
         eta_minutes, eta_seconds = divmod(eta_seconds, 60)  # Convert processing time to minutes and seconds
         
         # Create an ETA message based on the number of pages
-        message = f'Digging deep into your {pages_length} page(s)... ETA {int(eta_minutes)} minute(s) and {int(eta_seconds)} second(s).' if not int(eta_minutes) == 0 else f'Digging deep into your {pages_length} page(s)... ETA {int(eta_seconds)} second(s).'
+        message = f'Digging deep into your {pages_length} page(s)... ETA {int(eta_minutes)} minute(s) and {int(eta_seconds)} second(s).'
                     
         with st.spinner(message):  # Display ETA in Streamlit spinner
             with ThreadPoolExecutor(max_workers=5) as executor:  # Use ThreadPoolExecutor for concurrent processing
