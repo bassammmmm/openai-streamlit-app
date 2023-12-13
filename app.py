@@ -40,13 +40,13 @@ def main():
 
             # Display the latest message from the chat history
             latest_message = st.session_state['chat_history'][-1:]
-            st.markdown(f"***(Replying On)***: ***{latest_message[0]['reply_on']}***")  # Display the query the AI is responding to
+            st.markdown(f"***{latest_message[0]['reply_on']}***")  # Display the query the AI is responding to
             st.markdown(f"{latest_message[0]['message']}")  # Display the AI-generated response
             create_vertical_space(3)  # Create vertical space between chat messages
                 
             # Display the rest of the chat history in reverse order
             for chat in reversed(st.session_state['chat_history'][:-1]):
-                st.markdown(f"***(Replying On)***: ***{chat['reply_on']}***")  # Display the query the AI responded to
+                st.markdown(f"***{chat['reply_on']}***")  # Display the query the AI responded to
                 st.markdown(f"{chat['message']}")  # Display the AI-generated response
                 create_vertical_space(3)  # Create vertical space between chat messages
 
