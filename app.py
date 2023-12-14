@@ -23,7 +23,7 @@ def main():
             docs = knowledgeBase.similarity_search(query)
             
             # Initialize a ChatOpenAI instance and load a question answering chain
-            llm = ChatOpenAI(openai_api_key=api_key)
+            llm = ChatOpenAI(model = 'gpt-4', openai_api_key=api_key)
             chain = load_qa_chain(llm, chain_type='stuff')
             
             # Execute the chain with the query
