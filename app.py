@@ -26,7 +26,7 @@ def main():
         
         # Execute the chain with the query
         with get_openai_callback() as cost:
-            response = chain.run(input_documents=docs, question=f'(Your name is Structured Financials Assistant (You help with everything)). PLEASE BE SO DETAILED. Based on: {query}')
+            response = chain.run(input_documents=docs, question=f'(You are created by Structured Financials Assistant). PLEASE BE SO DETAILED. Based on: {query}')
             print(cost)  # Print the cost of the OpenAI request
             
         # Store query and AI-generated response in a dictionary
