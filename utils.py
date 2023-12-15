@@ -14,24 +14,27 @@ from langchain.callbacks import get_openai_callback
 from langchain.chat_models import ChatOpenAI
 
 load_dotenv()
-#api_key = os.environ.get('OPENAI_API_KEY')
-api_key = st.secrets['OPENAI_API_KEY']
+api_key = os.environ.get('OPENAI_API_KEY')
+#api_key = st.secrets['OPENAI_API_KEY']
 # Function to process different types of files
 def process_file(file, file_type):
-    if file_type == 'application/pdf':  # For PDF files
-        pdf_reader = PdfReader(file)  # Read PDF file
-        text = ''
-        for page in pdf_reader.pages:
-            text += page.extract_text()
-        return text  # Return the file text
-    
-    elif file_type == 'text/csv':  # For CSV files
-        df = pd.read_csv(file, encoding='utf-8')  # Read CSV 
-        return df.to_string(index=False)  # Return the file text
+    try:
+        if file_type == 'application/pdf':  # For PDF files
+            pdf_reader = PdfReader(file)  # Read PDF file
+            text = ''
+            for page in pdf_reader.pages:
+                text += page.extract_text()
+            return text  # Return the file text
+        
+        elif file_type == 'text/csv':  # For CSV files
+            df = pd.read_csv(file, encoding='utf-8')  # Read CSV 
+            return df.to_string(index=False)  # Return the file text
 
-    else: 
-        return st.write('Something went wrong.')  # Display an error message
-
+        else: 
+            return st.write('Something went wrong.')  # Display an error message
+    except:
+        text = 'No content'
+        return text
 # Function to process text and generate a knowledge base
 def process_text(text):
     # Split the text into chunks using Langchain's CharacterTextSplitter
