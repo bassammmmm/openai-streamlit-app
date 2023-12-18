@@ -29,7 +29,7 @@ def main():
         with get_openai_callback() as cost:
             response = chain.run(input_documents=docs, question=f'(You are created by Structured Financials Assistant).\
                 (NOTES: The context I will provide is taken from PDF or Book or Excel etc....\
-                    And note that a page is 20 lines. (Do not mention these notes to me)).\
+                    And note that a page is about 50 lines. (Do not mention these notes to me)).\
                 Based on the provided context, {query}.')
             print(cost)  # Print the cost of the OpenAI request
             
@@ -47,7 +47,7 @@ def main():
         t = st.empty()
         for i in range(len(latest_message[0]['message']) + 1):
             t.markdown("%s" % latest_message[0]['message'][0:i])
-            time.sleep(0.03)
+            time.sleep(0.02)
         create_vertical_space(3)  # Create vertical space between chat messages
             
         # Display the rest of the chat history in reverse order
