@@ -1,10 +1,11 @@
 from utils import *  # Importing functions from a 'utils' module
-
+import time
 # Initialize history session
 if 'chat_history' not in st.session_state:  # Check if 'chat_history' is not in the Streamlit session
     st.session_state['chat_history'] = []  # Initialize 'chat_history' as an empty list if not there
 
 def main():
+
     # Allow users to upload a file (supports PDF or CSV)
     file = st.file_uploader("Upload Your File", type=['pdf', 'csv'])
     
@@ -26,7 +27,10 @@ def main():
         
         # Execute the chain with the query
         with get_openai_callback() as cost:
-            response = chain.run(input_documents=docs, question=f'(You are created by Structured Financials Assistant). PLEASE BE SO DETAILED. Based on: {query}')
+            response = chain.run(input_documents=docs, question=f'(You are created by Structured Financials Assistant).\
+                (NOTES: The context I will provide is taken from PDF or Book or Excel etc....\
+                    And note that a page is 20 lines. (Do not mention these notes to me)).\
+                Based on the provided context, {query}.')
             print(cost)  # Print the cost of the OpenAI request
             
         # Store query and AI-generated response in a dictionary
@@ -39,7 +43,11 @@ def main():
         # Display the latest message from the chat history
         latest_message = st.session_state['chat_history'][-1:]
         st.markdown(f"***{latest_message[0]['reply_on']}***")  # Display the query the AI is responding to
-        st.markdown(f"{latest_message[0]['message']}")  # Display the AI-generated response
+
+        t = st.empty()
+        for i in range(len(latest_message[0]['message']) + 1):
+            t.markdown("%s" % latest_message[0]['message'][0:i])
+            time.sleep(0.03)
         create_vertical_space(3)  # Create vertical space between chat messages
             
         # Display the rest of the chat history in reverse order
