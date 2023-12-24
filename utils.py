@@ -14,8 +14,8 @@ from langchain.callbacks import get_openai_callback
 from langchain.chat_models import ChatOpenAI
 
 load_dotenv()
-api_key = os.environ.get('OPENAI_API_KEY')
-#api_key = st.secrets['OPENAI_API_KEY']
+#api_key = os.environ.get('OPENAI_API_KEY')
+api_key = st.secrets['OPENAI_API_KEY']
 # Function to process different types of files
 def process_file(file, file_type):
     try:

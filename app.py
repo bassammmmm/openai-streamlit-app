@@ -22,14 +22,14 @@ def main():
         docs = knowledgeBase.similarity_search(query)
         
         # Initialize a ChatOpenAI instance and load a question answering chain
-        llm = ChatOpenAI(openai_api_key=api_key)
+        llm = ChatOpenAI(openai_api_key=api_key, model = 'gpt-4-1106-preview')
         chain = load_qa_chain(llm, chain_type='stuff')
         
         # Execute the chain with the query
         with get_openai_callback() as cost:
             response = chain.run(input_documents=docs, question=f'(You are created by Structured Financials Assistant).\
                 (NOTES: The context I will provide is taken from PDF or Book or Excel etc....\
-                    And note that a page is about 50 lines. (Do not mention these notes to me)).\
+                    And note that a page can be about 50 lines. (Do not mention these notes to me)).\
                 Based on the provided context, {query}.')
             print(cost)  # Print the cost of the OpenAI request
             
