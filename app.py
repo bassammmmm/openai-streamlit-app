@@ -1,6 +1,7 @@
-from utils import *  # Importing functions from a 'utils' module
+from utils import *  
 import time
-# Initialize history session
+
+
 if 'chat_history' not in st.session_state:  # Check if 'chat_history' is not in the Streamlit session
     st.session_state['chat_history'] = []  # Initialize 'chat_history' as an empty list if not there
 
@@ -12,13 +13,13 @@ def main():
     file_type = str(file.type) if file else 'application/pdf' # Get the type of the uploaded file
     query = st.text_input("Ask questions.")  # Input field for user queries
     cancel_button = st.button('Cancel')
-    knowledgeBase = process_text(process_file(file, file_type))  # Process uploaded file and create a knowledge base
+    knowledgeBase = process_text(process_file(file, file_type))
     
     if cancel_button:  # If 'Cancel' button is clicked, stop
         st.stop()
     
     if query:  # If a query is entered by the user
-        # Search for similar documents based on the query
+        
         docs = knowledgeBase.similarity_search(query)
         
         # Initialize a ChatOpenAI instance and load a question answering chain

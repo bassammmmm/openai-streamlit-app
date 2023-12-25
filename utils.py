@@ -4,18 +4,21 @@ import pandas as pd
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 
-# Importing Langchain modules
+
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain import FAISS
 from langchain.chains.question_answering import load_qa_chain
-#from langchain.llms import OpenAI
 from langchain.callbacks import get_openai_callback
 from langchain.chat_models import ChatOpenAI
 
 load_dotenv()
+
+#First line should be executed for testing locally, second line is for production
 #api_key = os.environ.get('OPENAI_API_KEY')
 api_key = st.secrets['OPENAI_API_KEY']
+
+
 # Function to process different types of files
 def process_file(file, file_type):
     try:
@@ -35,6 +38,7 @@ def process_file(file, file_type):
     except:
         text = 'No content'
         return text
+    
 # Function to process text and generate a knowledge base
 def process_text(text):
     # Split the text into chunks using Langchain's CharacterTextSplitter
@@ -55,5 +59,5 @@ def process_text(text):
 # Function to create vertical space in Streamlit app
 def create_vertical_space(times):
     """Creates vertical space in the Streamlit app."""
-    for _ in range(times):  # Loop for specified number of times
+    for _ in range(times): 
         st.markdown("")  # Add empty space
